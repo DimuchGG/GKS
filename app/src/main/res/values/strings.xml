@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GKS</string>
+    <string name="sETData">Введите данные согласно варианту</string>
+    <string name="sTVSpace">*Данные вводятся через пробел</string>
+</resources>
