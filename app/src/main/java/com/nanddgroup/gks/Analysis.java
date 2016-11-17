@@ -1,4 +1,5 @@
 package com.nanddgroup.gks;
+
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -15,105 +16,99 @@ public class Analysis {
     //максимальное кол-во деталей в одной строке
     private int max;
     //лист деталей
-    private List<Detail> alDetailsRow;
+    private List<Element> alElements;
     //лист листов с деталями
-    private List<List<Detail>> alDetails;
+    private List<List<Element>> alDetails;
+    private List<Element> listTotalElements;
 
     public Analysis(String[] data) {
         this.data = data;
     }
 
-    //проверяет корректность ввода String
+    //проверяет корректность ввода String, заполняет все поля
     public boolean checkInput() {
 
-        if (true){
+        if (true) {
+            max = checkMaxElementsInDetails();
+            total = checkTotalElements();
+            feelData();
 
-            max = checkMaxDetailsInColumn();
 //            System.out.println("max = " + max + "   total = " + total);
+//            Log.d("my", "max = " + max + "   total = " + total);
             return true;
         } else
             return false;
     }
 
-    //возвращает list разновидностей деталей
-    public List<String> checkDetails() {
-        List<String> listTotalDetails = new ArrayList<>();
+    //возвращает кол-во разновидностей деталей
+    public int checkTotalElements() {
+        listTotalElements = new ArrayList<>();
 
-//        Log.wtf("my", String.valueOf(data.length));
-
-        for (int i = 0; i < data.length; i++){
+        for (int i = 0; i < data.length; i++) {
             String[] parts = data[i].split(" ");
-//            Log.wtf("my", String.valueOf(parts.length));
             for (int j = 0; j < parts.length; j++) {
-//                Log.wtf("my", parts[j]);
-                if ( listTotalDetails.size() == 0 )
-                    listTotalDetails.add(parts[0]);
-                for (int k = 0; k < listTotalDetails.size(); k++) {
-//                    Log.wtf("my", parts[j] + " * " + listTotalDetails.get(k) + String.valueOf(listTotalDetails));
-//                    if (parts[j].equals(listTotalDetails.get(k))) {
-                    if (parts[j].charAt(0) == listTotalDetails.get(k).charAt(0) &&
-                            parts[j].charAt(1) == listTotalDetails.get(k).charAt(1)) {
-//                        Log.wtf("my", "true");
+                if (listTotalElements.size() == 0)
+                    listTotalElements.add(new SpecificElement(parts[0]));
+                for (int k = 0; k < listTotalElements.size(); k++) {
+//                    System.out.println(parts[j] + " * " + listTotalElements.get(k) + listTotalElements.toString());
+//                    if (parts[j].equals(listTotalElements.get(k).getName()))
+                    if (parts[j].charAt(0) == listTotalElements.get(k).getName().charAt(0) &&
+                            parts[j].charAt(1) == listTotalElements.get(k).getName().charAt(1))
                         break;
-                    }
-                    else {
-//                        Log.wtf("my", "false");
-                        if (k == (listTotalDetails.size() - 1)) {
-//                            Log.wtf("my", "false-true");
-                            listTotalDetails.add(parts[j]);
-                            break;
-                        }
+                    else if (k == listTotalElements.size() - 1) {
+                        listTotalElements.add(new SpecificElement(parts[j]));
+                        break;
                     }
                 }
             }
         }
-//        System.out.println(listTotalDetails.toString());
-//        Log.wtf("my", String.valueOf(listTotalDetails));
-        return listTotalDetails;
+//        System.out.println(listTotalElements.toString());
+        return listTotalElements.size();
     }
 
-    //возвращает максимальное кол-во деталей в строках
-    private int checkMaxDetailsInColumn() {
+    //возвращает максимальное кол-во элементов в деталях
+    private int checkMaxElementsInDetails() {
         int maxDetails = 0;
 
         for (int i = 0; i < data.length; i++) {
             String[] parts = data[i].split(" ");
-            if ( maxDetails < parts.length )
+            if (maxDetails < parts.length)
                 maxDetails = parts.length;
         }
         return maxDetails;
     }
 
-    //возвращает лист с массивом деталей
-    public List<List<Detail>> feelData() {
-
-//        Detail[][] detail = new SpecificDetail[data.length][];
-//        for (int i = 0; i < data.length; i++)
-//            detail[i] = new SpecificDetail[max];
-
+    //заполняет листы деталей и элементов
+    public void feelData() {
         alDetails = new ArrayList<>();
-        for (int i = 0; i < data.length; i++) {
-            alDetailsRow = new ArrayList<>();
-            for (int j = 0; j < max; j++)
-                alDetailsRow.add(new SpecificDetail());
-            alDetails.add(alDetailsRow);
-        }
 
         for (int i = 0; i < data.length; i++) {
+            alElements = new ArrayList<>();
             String[] parts = data[i].split(" ");
             for (int j = 0; j < parts.length; j++) {
+                Element element = new SpecificElement(parts[j]);
 //                System.out.println(parts[j].charAt(0) + "-" + parts[j].charAt(1));
-                alDetails.get(i).get(j).setSymbolKey(String.valueOf(parts[j].charAt(0)));
-                alDetails.get(i).get(j).setNumKey(String.valueOf(parts[j].charAt(1)));
+//                element.setSymbolKey(String.valueOf(parts[j].charAt(0)));
+//                element.setNumKey(String.valueOf(parts[j].charAt(1)));
+                alElements.add(element);
             }
+            alDetails.add(alElements);
         }
-
 //        for (int i = 0; i < data.length; i++)
 //            for (int j = 0; j < max; j++) {
 //                System.out.println(alDetails.get(i).get(j).getName());
 //            }
+    }
 
-//        Log.wtf("my", String.valueOf(alDetails));
+    public List<Element> getAlElements() {
+        return alElements;
+    }
+
+    public List<List<Element>> getAlDetails() {
         return alDetails;
+    }
+
+    public List<Element> getTotalElements() {
+        return listTotalElements;
     }
 }
