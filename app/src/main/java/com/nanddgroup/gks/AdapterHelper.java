@@ -17,7 +17,7 @@ public class AdapterHelper {
   String[] groups = new String[] {"Вариант"};
    
   // названия телефонов (элементов)
-  String[] phonesHTC = new String[] {"Дмитрий", "Екатерина"};
+  String[] phonesHTC = new String[] {"Дмитрий", "Екатерина", "2 структуры"};
 
   // коллекция для групп
   ArrayList<Map<String, String>> groupData;
